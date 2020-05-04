@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
   uint32_t *nums = (uint32_t *)calloc(sizeof(uint32_t), nlines);
   for (int iter = atoi(argv[2]); iter > 0; --iter) {
     clock_t t0 = clock();
-    convertv7(nlines, lines, nums);
+    convertv8(nlines, lines, nums);
     double t = (double)(clock() - t0) / CLOCKS_PER_SEC;
     assert(checksum(nums, nlines) == QUOTES_CSUM);
     if (t < min_t) {

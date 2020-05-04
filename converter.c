@@ -16,15 +16,6 @@ void convert_all(unsigned nlines, char *lines[], quote_t nums[])
   }
 }
 
-void printdigits(char *lines[])
-{
-    for (unsigned i = 1436645; i < 1436656; i++)
-    {
-        unsigned j = 0;
-        printf("%ld %d %d %d %d = %d %d %d %d |= %d\n", sizeof(lines[i]), lines[i][j], lines[i][j+1], lines[i][j+2], lines[i][j+3], lines[i][j+4], lines[i][j+5], lines[i][j+6], lines[i][j+7], lines[i][j+8]);
-    }
-}
-
 void naive_convert(unsigned nlines, char *lines[], quote_t  nums[])
 {
     for (unsigned i = 0; i < nlines; i++)
@@ -32,10 +23,9 @@ void naive_convert(unsigned nlines, char *lines[], quote_t  nums[])
         uint32_t number = 0;
         for (unsigned j = 0; j < strlen(lines[i]); j++)
         {
-            number = (number + (lines[i][j] - 48)) * 10;
+            number = (number * 10) + (lines[i][j] - 48);
         }
-        nums[i] = number/10;
-        printf("%d\n", nums[i]);
+        nums[i] = number;
     }
 }
 
@@ -49,11 +39,11 @@ void convertv1(unsigned nlines, char *lines[], quote_t  nums[])
         unsigned c = lines[i][0];
         while(c != 0)
         {
-            number = (number + (lines[i][j] - 48)) * 10;
+            number = (number*10) + (lines[i][j] - 48);
             j++;
             c = lines[i][j];
         }
-        nums[i] = number/10;
+        nums[i] = number;
         //printf("%d\n", nums[i]);
     }
 }
@@ -72,11 +62,9 @@ void convertv2(unsigned nlines, char *lines[], quote_t  nums[])
         char* line = lines[i];
         while(*line != '\0')
         {
-            number = (number + (*line++ - 48)) * 10;
+            number = (number*10) + (*line++ - 48);
         }
-
-        nums[i] = number/10;
-        //printf("%d\n", nums[i]);
+        nums[i] = number;
     }
 }
 
@@ -86,8 +74,7 @@ void convertv3(unsigned nlines, char *lines[], quote_t  nums[])
     for (unsigned i = 0; i < nlines; i++)
     {
         uint32_t number = lines[i][0] - 48;
-/*         while((c = (*++(lines[i])) - 48) != 0)
-        { */
+
         number = (number * 10) + (lines[i][1] - 48);
         number = (number * 10) + (lines[i][2] - 48);
         
@@ -100,7 +87,6 @@ void convertv3(unsigned nlines, char *lines[], quote_t  nums[])
             }
         }
         nums[i] = number;
-        //printf("%d\n", nums[i]);
     }
 }
 
@@ -110,8 +96,6 @@ void convertv4(unsigned nlines, char *lines[], quote_t  nums[])
     for (unsigned i = 0; i < nlines; i++)
     {
         uint32_t number = lines[i][0] - 48;
-/*         while((c = (*++(lines[i])) - 48) != 0)
-        { */
         number = (number * 10) + (lines[i][1] - 48);
         number = (number * 10) + (lines[i][2] - 48);
         
@@ -124,7 +108,6 @@ void convertv4(unsigned nlines, char *lines[], quote_t  nums[])
             }
         }
         nums[i] = number;
-        //printf("%d\n", nums[i]);
     }
 }
 
@@ -137,8 +120,7 @@ void convertv5(unsigned nlines, char *lines[], quote_t  nums[])
     unsigned last = nlines-1;
     char* line = lines[last];
     uint32_t number = line[0] - 48;
-/*         while((c = (*++(lines[i])) - 48) != 0)
-    { */
+
     number = (number * 10) + (line[1] - 48);
     number = (number * 10) + (line[2] - 48);
     
@@ -156,8 +138,7 @@ void convertv5(unsigned nlines, char *lines[], quote_t  nums[])
     {
         char* line = lines[0];
         uint32_t number = line[0] - 48;
-/*         while((c = (*++(lines[i])) - 48) != 0)
-        { */
+
         number = (number * 10) + (line[1] - 48);
         number = (number * 10) + (line[2] - 48);
         
@@ -172,36 +153,33 @@ void convertv5(unsigned nlines, char *lines[], quote_t  nums[])
         *nums = number;
         nums++;
         lines++;
-        //printf("%d\n", nums[i]);
     }
 }
 
+// Fastest
+// Combining multiple addition operations
 void convertv6(unsigned nlines, char *lines[], quote_t  nums[])
 {
+    uint32_t number;
     for (unsigned i = 0; i < nlines; i++)
     {
-        uint32_t number = lines[i][0];
+        number = lines[i][0];
         number = (number * 10) + lines[i][1];
         number = (number * 10) + lines[i][2] - 5328;
         
         if (__builtin_expect(lines[i][3] != '\0', 1))
         {
-            number = (number * 10) + (lines[i][3] - 48);
+            number = (number * 10) + lines[i][3] - 48;
             if (__builtin_expect(lines[i][4] != '\0', 0))
             {
-                number = (number *10  )+ (lines[i][4] - 48);
+                number = (number * 10)+ lines[i][4] - 48;
             }
         }
-        else
-        {
         nums[i] = number;
-        }
-        
-        //printf("%d\n", nums[i]);
     }
 }
  
-// use simd on a case by case basis
+// Use simd when we have 4 contiguous nums with 4 chars
  void convertv7(unsigned nlines, char *lines[], quote_t  nums[])
 {
     for (unsigned i = 0; i < nlines; i++)
@@ -267,8 +245,33 @@ void convertv6(unsigned nlines, char *lines[], quote_t  nums[])
                     number = (number *10  )+ (line[4] - 48);
                 }
             }
-            //printf("%d\n", number);
             nums[i] = number;
         }
     }
 }
+
+//using 16 bit integers
+void convertv8(unsigned nlines, char *lines[], quote_t  nums[])
+{
+    uint16_t number;
+    char * line;
+    uint16_t* nms = (uint16_t*)nums;
+    for (unsigned i = 0; i < nlines; i++)
+    {
+        line = lines[i];
+        number = line[0];
+        number = (number * 10) + line[1];
+        number = (number * 10) + line[2] - 5328;
+        
+        if (__builtin_expect(line[3] != '\0', 1))
+        {
+            number = (number * 10) + line[3] - 48;
+            if (__builtin_expect(line[4] != '\0', 0))
+            {
+                number = (number * 10  )+ line[4] - 48;
+            }
+        }
+        nms[2*i] = number;
+    }     
+}
+ 

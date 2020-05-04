@@ -50,3 +50,9 @@ void convertv7(
     unsigned nlines,  
     char *lines[],    
     quote_t nums[]);
+
+
+void convertv8(
+    unsigned nlines,  
+    char *lines[],    
+    quote_t nums[]);
