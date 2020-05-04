@@ -11,3 +11,7 @@ void convert_all(
     quote_t nums[]    // Array of size nlines for the resulting outputs
 );
 
+void naive_convert(
+    unsigned nlines,  // How many lines do we need to convert?
+    char *lines[],    // Array of size nlines pointers to null-terminated strings
+    quote_t nums[]);
