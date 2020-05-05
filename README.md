@@ -9,7 +9,7 @@ To test, run: ./driver quotes.txt 1000
 ## atoi:
 Best run time overall: 0.037066s
 
-Out of 1000 iterations, the fastest atoi was able to convert all the stock qoutes into integers was 0.037066s. 
+Out of 1000 iterations, the fastest atoi was able to convert all the stock quotes into integers was 0.037066s. 
 
 ## naive_convert:
 Best run time overall: 0.017485s
