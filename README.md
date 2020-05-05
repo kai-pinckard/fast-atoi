@@ -5,6 +5,7 @@ In order to quickly convert historical S&P 500 quotes from strings of text into 
 To build, simply run: gcc -O3 -std=c99 -march=native -o driver -Werror -Wall -Wextra -pedantic *.c
 
 To test, run: ./driver quotes.txt 1000
+Note: This will benchmark convertv6 (the fastest) on the quotes in quotes.txt over a 1000 iterations. The function being tested can easily be changed by modifying a single line in driver.c
 
 ## atoi:
 Best run time overall: 0.037066s
