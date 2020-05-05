@@ -1,6 +1,10 @@
 # fast-atoi - Kai Pinckard
 
-In order to quickly convert historical S&P 500 quotes from strings of text into integers a variety of implementations of a converter function were implemented. As a baseline the performance of the standard library atoi function was measured. In an effort to address noisy measurements all benchmarking was done with 1000 iterations. 
+In order to quickly convert historical S&P 500 quotes from strings of text into integers a variety of implementations of a converter function were created. As a baseline the performance of the standard library atoi function was measured. In an effort to address noisy measurements all benchmarking was done with 1000 iterations. 
+
+To build, simply run: gcc -O3 -std=c99 -march=native -o driver -Werror -Wall -Wextra -pedantic *.c
+
+To test, run: ./driver quotes.txt 1000
 
 ## atoi:
 Best run time overall: 0.037066s
